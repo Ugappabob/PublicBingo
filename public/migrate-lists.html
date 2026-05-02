@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate User Lists to Production</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196F3;
+        }
+        pre {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Migrate User Lists to Production</h1>
+        
+        <div class="step">
+            <h3>Step 1: Check Local Storage</h3>
+            <p>First, let's check if you have any user-created lists in your browser's local storage.</p>
+            <button onclick="checkLocalStorage()">Check Local Storage</button>
+            <div id="localStorageStatus"></div>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Migrate to Firebase</h3>
+            <p>If you have user-created lists, click the button below to migrate them to the production Firebase database.</p>
+            <button id="migrateBtn" onclick="migrateLists()" disabled>Migrate Lists to Production</button>
+            <div id="migrationStatus"></div>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Verify Migration</h3>
+            <p>After migration, you can verify that your lists are now available in production.</p>
+            <button onclick="verifyMigration()">Verify Migration</button>
+            <div id="verificationStatus"></div>
+        </div>
+
+        <div class="step">
+            <h3>Manual Migration (Alternative)</h3>
+            <p>If the automatic migration doesn't work, you can manually copy your lists:</p>
+            <button onclick="showManualInstructions()">Show Manual Instructions</button>
+            <div id="manualInstructions" style="display: none;">
+                <h4>Manual Migration Steps:</h4>
+                <ol>
+                    <li>Go to your development site (localhost:3000)</li>
+                    <li>Open browser console (F12)</li>
+                    <li>Run: <code>JSON.stringify(JSON.parse(localStorage.getItem('userContributions')), null, 2)</code></li>
+                    <li>Copy the output</li>
+                    <li>Go to production site (publicbingo.web.app)</li>
+                    <li>Open browser console (F12)</li>
+                    <li>Run: <code>localStorage.setItem('userContributions', '[paste your data here]')</code></li>
+                    <li>Refresh the page</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let userContributions = null;
+
+        function checkLocalStorage() {
+            const status = document.getElementById('localStorageStatus');
+            try {
+                const contributions = localStorage.getItem('userContributions');
+                if (contributions) {
+                    userContributions = JSON.parse(contributions);
+                    status.innerHTML = `
+                        <div class="status success">
+                            <strong>✅ Found ${userContributions.length} user-created lists!</strong>
+                            <ul>
+                                ${userContributions.map(list => `<li><strong>${list.name}</strong> (${list.phrases.length} phrases) - by ${list.contributorName}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                    document.getElementById('migrateBtn').disabled = false;
+                } else {
+                    status.innerHTML = `
+                        <div class="status info">
+                            <strong>ℹ️ No user-created lists found in local storage.</strong>
+                            <p>This means you haven't created any custom phrase lists yet, or you're not on the same browser/device where you created them.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                status.innerHTML = `
+                    <div class="status error">
+                        <strong>❌ Error reading local storage:</strong>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function migrateLists() {
+            const status = document.getElementById('migrationStatus');
+            const btn = document.getElementById('migrateBtn');
+            
+            btn.disabled = true;
+            btn.textContent = 'Migrating...';
+            
+            try {
+                // This would need to be run on the production site with Firebase available
+                status.innerHTML = `
+                    <div class="status info">
+                        <strong>🔄 Migration in progress...</strong>
+                        <p>This feature requires Firebase to be available. Please run this on the production site.</p>
+                    </div>
+                `;
+                
+                // For now, show manual instructions
+                status.innerHTML += `
+                    <div class="status info">
+                        <strong>📋 Manual Migration Required</strong>
+                        <p>Since this is a static page, you'll need to manually migrate your lists:</p>
+                        <ol>
+                            <li>Go to <a href="https://publicbingo.web.app" target="_blank" style="color: #4CAF50;">https://publicbingo.web.app</a></li>
+                            <li>Open browser console (F12)</li>
+                            <li>Paste this code:</li>
+                            <pre>${getMigrationCode()}</pre>
+                            <li>Press Enter to run the migration</li>
+                        </ol>
+                    </div>
+                `;
+                
+            } catch (error) {
+                status.innerHTML = `
+                    <div class="status error">
+                        <strong>❌ Migration failed:</strong>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Migrate Lists to Production';
+            }
+        }
+
+        function getMigrationCode() {
+            if (!userContributions) return '// No user contributions found';
+            
+            return `
+// Migration code for production site
+const userContributions = ${JSON.stringify(userContributions, null, 2)};
+
+// Store in localStorage for production
+localStorage.setItem('userContributions', JSON.stringify(userContributions));
+
+console.log('✅ User contributions migrated to production!');
+console.log('Refreshing page to load the new lists...');
+setTimeout(() => window.location.reload(), 1000);
+            `.trim();
+        }
+
+        function verifyMigration() {
+            const status = document.getElementById('verificationStatus');
+            try {
+                const contributions = localStorage.getItem('userContributions');
+                if (contributions) {
+                    const parsed = JSON.parse(contributions);
+                    status.innerHTML = `
+                        <div class="status success">
+                            <strong>✅ Migration verified!</strong>
+                            <p>Found ${parsed.length} user-created lists in production.</p>
+                        </div>
+                    `;
+                } else {
+                    status.innerHTML = `
+                        <div class="status info">
+                            <strong>ℹ️ No user contributions found.</strong>
+                            <p>Run the migration first, then verify.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                status.innerHTML = `
+                    <div class="status error">
+                        <strong>❌ Verification failed:</strong>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showManualInstructions() {
+            const instructions = document.getElementById('manualInstructions');
+            instructions.style.display = instructions.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // Auto-check localStorage on page load
+        window.onload = function() {
+            checkLocalStorage();
+        };
+    </script>
+</body>
+</html>

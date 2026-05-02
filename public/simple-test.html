@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Test - Add User Contributions</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .debug-section { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Simple Test - Add User Contributions</h1>
+    
+    <div class="debug-section">
+        <h3>Environment Check</h3>
+        <div id="environment-info"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Add Test Contributions to localStorage</h3>
+        <div id="contribution-info"></div>
+        <button onclick="addTestContributions()">Add Test User Contributions to localStorage</button>
+        <button onclick="checkContributions()">Check localStorage Contributions</button>
+        <button onclick="clearContributions()">Clear localStorage Contributions</button>
+    </div>
+
+    <div class="debug-section">
+        <h3>Instructions</h3>
+        <p>1. Click "Add Test User Contributions to localStorage" to add sample user-created lists</p>
+        <p>2. Go to the main app: <a href="/create" target="_blank">https://publicbingo.web.app/create</a></p>
+        <p>3. Check if the user contributions now appear in the phrase selector</p>
+        <p>4. If they don't appear, check the browser console for debugging logs</p>
+    </div>
+
+    <script>
+        // Environment check
+        function checkEnvironment() {
+            const envDiv = document.getElementById('environment-info');
+            const isProduction = window.location.hostname !== 'localhost' && 
+                                window.location.hostname !== '127.0.0.1';
+            
+            envDiv.innerHTML = `
+                <div class="info">Hostname: ${window.location.hostname}</div>
+                <div class="info">URL: ${window.location.href}</div>
+                <div class="${isProduction ? 'success' : 'error'}">
+                    Environment: ${isProduction ? 'Production' : 'Development'}
+                </div>
+            `;
+        }
+        
+        // Add test contributions to localStorage
+        function addTestContributions() {
+            const contributionDiv = document.getElementById('contribution-info');
+            contributionDiv.innerHTML = '<div class="info">Adding test contributions to localStorage...</div>';
+            
+            try {
+                const testContributions = [
+                    {
+                        id: 'test-contribution-1',
+                        name: 'Test User List 1',
+                        description: 'A test user-created phrase list',
+                        category: 'Custom',
+                        phrases: [
+                            'Test Phrase 1', 'Test Phrase 2', 'Test Phrase 3', 'Test Phrase 4', 'Test Phrase 5',
+                            'Test Phrase 6', 'Test Phrase 7', 'Test Phrase 8', 'Test Phrase 9', 'Test Phrase 10',
+                            'Test Phrase 11', 'Test Phrase 12', 'Test Phrase 13', 'Test Phrase 14', 'Test Phrase 15',
+                            'Test Phrase 16', 'Test Phrase 17', 'Test Phrase 18', 'Test Phrase 19', 'Test Phrase 20',
+                            'Test Phrase 21', 'Test Phrase 22', 'Test Phrase 23', 'Test Phrase 24'
+                        ],
+                        contributorName: 'Test User',
+                        contributorId: 'test-user-1',
+                        createdAt: new Date().toISOString(),
+                        status: 'approved',
+                        votes: 0,
+                        timesUsed: 0
+                    },
+                    {
+                        id: 'test-contribution-2',
+                        name: 'Another Test List',
+                        description: 'Another test user-created phrase list',
+                        category: 'Custom',
+                        phrases: [
+                            'Another Test 1', 'Another Test 2', 'Another Test 3', 'Another Test 4', 'Another Test 5',
+                            'Another Test 6', 'Another Test 7', 'Another Test 8', 'Another Test 9', 'Another Test 10',
+                            'Another Test 11', 'Another Test 12', 'Another Test 13', 'Another Test 14', 'Another Test 15',
+                            'Another Test 16', 'Another Test 17', 'Another Test 18', 'Another Test 19', 'Another Test 20',
+                            'Another Test 21', 'Another Test 22', 'Another Test 23', 'Another Test 24'
+                        ],
+                        contributorName: 'Test User 2',
+                        contributorId: 'test-user-2',
+                        createdAt: new Date().toISOString(),
+                        status: 'approved',
+                        votes: 0,
+                        timesUsed: 0
+                    }
+                ];
+                
+                // Get existing contributions
+                let existingContributions = [];
+                try {
+                    const stored = localStorage.getItem('userContributions');
+                    if (stored) {
+                        existingContributions = JSON.parse(stored);
+                    }
+                } catch (error) {
+                    console.log('No existing contributions found');
+                }
+                
+                // Add new contributions
+                const allContributions = [...existingContributions, ...testContributions];
+                localStorage.setItem('userContributions', JSON.stringify(allContributions));
+                
+                contributionDiv.innerHTML = `
+                    <div class="success">Successfully added ${testContributions.length} test contributions to localStorage!</div>
+                    <div class="info">Total contributions in localStorage: ${allContributions.length}</div>
+                    <div class="info">Now go to the main app to see if they appear.</div>
+                `;
+                
+                console.log('✅ Added test contributions to localStorage:', testContributions);
+                
+            } catch (error) {
+                contributionDiv.innerHTML = `<div class="error">Error adding contributions: ${error.message}</div>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        // Check existing contributions
+        function checkContributions() {
+            const contributionDiv = document.getElementById('contribution-info');
+            contributionDiv.innerHTML = '<div class="info">Checking localStorage contributions...</div>';
+            
+            try {
+                const stored = localStorage.getItem('userContributions');
+                if (stored) {
+                    const contributions = JSON.parse(stored);
+                    contributionDiv.innerHTML = `
+                        <div class="info">Found ${contributions.length} user contributions in localStorage</div>
+                        <div class="info">Contributions:</div>
+                        <pre>${JSON.stringify(contributions, null, 2)}</pre>
+                    `;
+                } else {
+                    contributionDiv.innerHTML = '<div class="info">No user contributions found in localStorage</div>';
+                }
+                
+            } catch (error) {
+                contributionDiv.innerHTML = `<div class="error">Error checking contributions: ${error.message}</div>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        // Clear contributions
+        function clearContributions() {
+            const contributionDiv = document.getElementById('contribution-info');
+            try {
+                localStorage.removeItem('userContributions');
+                contributionDiv.innerHTML = '<div class="success">Cleared all user contributions from localStorage</div>';
+            } catch (error) {
+                contributionDiv.innerHTML = `<div class="error">Error clearing contributions: ${error.message}</div>`;
+            }
+        }
+        
+        // Initialize
+        checkEnvironment();
+    </script>
+</body>
+</html>

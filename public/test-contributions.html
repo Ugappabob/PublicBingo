@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test User Contributions</title>
+</head>
+<body>
+    <h1>Test User Contributions</h1>
+    <button onclick="addTestData()">Add Test Data to localStorage</button>
+    <button onclick="checkData()">Check localStorage Data</button>
+    <div id="result"></div>
+
+    <script>
+        function addTestData() {
+            const testData = [
+                {
+                    id: 'test-1',
+                    name: 'Test List 1',
+                    description: 'A test user list',
+                    category: 'Custom',
+                    phrases: ['Test 1', 'Test 2', 'Test 3', 'Test 4', 'Test 5', 'Test 6', 'Test 7', 'Test 8', 'Test 9', 'Test 10', 'Test 11', 'Test 12', 'Test 13', 'Test 14', 'Test 15', 'Test 16', 'Test 17', 'Test 18', 'Test 19', 'Test 20', 'Test 21', 'Test 22', 'Test 23', 'Test 24'],
+                    contributorName: 'Test User',
+                    contributorId: 'test-user-1',
+                    createdAt: new Date().toISOString(),
+                    status: 'approved',
+                    votes: 0,
+                    timesUsed: 0
+                }
+            ];
+            
+            localStorage.setItem('userContributions', JSON.stringify(testData));
+            document.getElementById('result').innerHTML = '<p style="color: green;">Test data added to localStorage!</p>';
+        }
+        
+        function checkData() {
+            const data = localStorage.getItem('userContributions');
+            if (data) {
+                const parsed = JSON.parse(data);
+                document.getElementById('result').innerHTML = '<p style="color: blue;">Found ' + parsed.length + ' contributions in localStorage</p>';
+            } else {
+                document.getElementById('result').innerHTML = '<p style="color: red;">No contributions found in localStorage</p>';
+            }
+        }
+    </script>
+</body>
+</html>

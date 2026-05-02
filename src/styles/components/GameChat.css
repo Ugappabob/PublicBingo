@@ -1,0 +1,52 @@
+.game-chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--background-color);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.game-chat-title {
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  background-color: var(--primary-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.game-chat-error {
+  padding: 16px;
+  color: var(--error-color);
+  text-align: center;
+  font-size: 0.9rem;
+  background-color: var(--error-background);
+  border-radius: 4px;
+  margin: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .game-chat-container {
+    border-radius: 4px;
+  }
+
+  .game-chat-title {
+    font-size: 1rem;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-chat-container {
+    margin: 8px;
+  }
+
+  .game-chat-title {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
+} 

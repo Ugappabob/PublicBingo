@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Public Bingo</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .debug-section { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Public Bingo Debug Page</h1>
+    
+    <div class="debug-section">
+        <h3>Environment Check</h3>
+        <div id="environment-info"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Local Storage Check</h3>
+        <div id="localStorage-info"></div>
+        <button onclick="checkLocalStorage()">Check Local Storage</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Firebase Connection Test</h3>
+        <div id="firebase-info"></div>
+        <button onclick="testFirebase()">Test Firebase</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Auto-Migration Test</h3>
+        <div id="migration-info"></div>
+        <button onclick="runMigration()">Run Migration</button>
+        <button onclick="checkPhraseLists()">Check Phrase Lists</button>
+        <button onclick="forceSeedLists()">Force Seed Lists</button>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Console Logs</h3>
+        <div id="console-logs"></div>
+        <button onclick="clearLogs()">Clear Logs</button>
+    </div>
+
+    <script>
+        // Capture console logs
+        const originalLog = console.log;
+        const originalError = console.error;
+        const logs = [];
+        
+        console.log = function(...args) {
+            logs.push({ type: 'log', message: args.join(' ') });
+            originalLog.apply(console, args);
+            updateConsoleLogs();
+        };
+        
+        console.error = function(...args) {
+            logs.push({ type: 'error', message: args.join(' ') });
+            originalError.apply(console, args);
+            updateConsoleLogs();
+        };
+        
+        function updateConsoleLogs() {
+            const logsDiv = document.getElementById('console-logs');
+            logsDiv.innerHTML = logs.map(log => 
+                `<div class="${log.type}">[${log.type.toUpperCase()}] ${log.message}</div>`
+            ).join('');
+        }
+        
+        function clearLogs() {
+            logs.length = 0;
+            updateConsoleLogs();
+        }
+        
+        // Environment check
+        function checkEnvironment() {
+            const envDiv = document.getElementById('environment-info');
+            const isProduction = window.location.hostname !== 'localhost' && 
+                                window.location.hostname !== '127.0.0.1';
+            
+            envDiv.innerHTML = `
+                <div class="info">Hostname: ${window.location.hostname}</div>
+                <div class="info">URL: ${window.location.href}</div>
+                <div class="${isProduction ? 'success' : 'error'}">
+                    Environment: ${isProduction ? 'Production' : 'Development'}
+                </div>
+            `;
+        }
+        
+        // Local storage check
+        function checkLocalStorage() {
+            const storageDiv = document.getElementById('localStorage-info');
+            const userContributions = localStorage.getItem('userContributions');
+            const defaultLists = localStorage.getItem('defaultPhraseLists');
+            
+            storageDiv.innerHTML = `
+                <div class="info">User Contributions: ${userContributions ? 'Found' : 'Not found'}</div>
+                <div class="info">Default Lists: ${defaultLists ? 'Found' : 'Not found'}</div>
+                ${userContributions ? `<pre>${JSON.stringify(JSON.parse(userContributions), null, 2)}</pre>` : ''}
+            `;
+        }
+        
+        // Firebase test
+        async function testFirebase() {
+            const firebaseDiv = document.getElementById('firebase-info');
+            firebaseDiv.innerHTML = '<div class="info">Testing Firebase connection...</div>';
+            
+            try {
+                // Try to import Firebase
+                const firebase = await import('./src/firebase/index.js');
+                firebaseDiv.innerHTML = '<div class="success">Firebase imported successfully!</div>';
+                
+                // Test database connection
+                if (firebase.db) {
+                    firebaseDiv.innerHTML += '<div class="success">Database connection available!</div>';
+                } else {
+                    firebaseDiv.innerHTML += '<div class="error">Database connection not available</div>';
+                }
+            } catch (error) {
+                firebaseDiv.innerHTML = `<div class="error">Firebase import failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Migration test
+        async function runMigration() {
+            const migrationDiv = document.getElementById('migration-info');
+            migrationDiv.innerHTML = '<div class="info">Running migration...</div>';
+            
+            try {
+                // Import the migration script
+                const { autoMigrateUserLists } = await import('./src/scripts/autoMigrateUserLists.js');
+                await autoMigrateUserLists();
+                migrationDiv.innerHTML = '<div class="success">Migration completed!</div>';
+            } catch (error) {
+                migrationDiv.innerHTML = `<div class="error">Migration failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Check phrase lists in Firebase
+        async function checkPhraseLists() {
+            const migrationDiv = document.getElementById('migration-info');
+            migrationDiv.innerHTML = '<div class="info">Checking phrase lists...</div>';
+            
+            try {
+                const firebase = await import('./src/firebase/index.js');
+                const { defaultPhraseLists } = await import('./src/data/defaultPhraseLists.js');
+                
+                // Check default lists
+                const defaultLists = await firebase.getDocs(firebase.collection(firebase.db, 'defaultPhraseLists'));
+                const userContributions = await firebase.getDocs(firebase.collection(firebase.db, 'userContributions'));
+                
+                migrationDiv.innerHTML = `
+                    <div class="info">Default lists in Firebase: ${defaultLists.size}</div>
+                    <div class="info">User contributions in Firebase: ${userContributions.size}</div>
+                    <div class="info">Default lists in code: ${defaultPhraseLists.length}</div>
+                    <div class="info">Default list names: ${defaultPhraseLists.map(list => list.name).join(', ')}</div>
+                `;
+            } catch (error) {
+                migrationDiv.innerHTML = `<div class="error">Check failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Force seed lists
+        async function forceSeedLists() {
+            const migrationDiv = document.getElementById('migration-info');
+            migrationDiv.innerHTML = '<div class="info">Force seeding lists...</div>';
+            
+            try {
+                const firebase = await import('./src/firebase/index.js');
+                const { defaultPhraseLists } = await import('./src/data/defaultPhraseLists.js');
+                
+                // Clear existing lists first
+                const existingLists = await firebase.getDocs(firebase.collection(firebase.db, 'defaultPhraseLists'));
+                for (const doc of existingLists.docs) {
+                    await firebase.deleteDoc(firebase.doc(firebase.db, 'defaultPhraseLists', doc.id));
+                }
+                
+                // Seed new lists
+                let seededCount = 0;
+                for (const list of defaultPhraseLists) {
+                    await firebase.addDoc(firebase.collection(firebase.db, 'defaultPhraseLists'), {
+                        ...list,
+                        createdAt: new Date().toISOString(),
+                        isDefault: true
+                    });
+                    seededCount++;
+                }
+                
+                migrationDiv.innerHTML = `<div class="success">Force seeded ${seededCount} lists successfully!</div>`;
+            } catch (error) {
+                migrationDiv.innerHTML = `<div class="error">Force seed failed: ${error.message}</div>`;
+            }
+        }
+        
+        // Initialize
+        checkEnvironment();
+        checkLocalStorage();
+        
+        // Auto-refresh every 5 seconds
+        setInterval(() => {
+            checkLocalStorage();
+        }, 5000);
+    </script>
+</body>
+</html>

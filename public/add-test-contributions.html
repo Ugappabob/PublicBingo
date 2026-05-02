@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Test User Contributions</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
+        .debug-section { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
+        .error { color: red; }
+        .success { color: green; }
+        .info { color: blue; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Add Test User Contributions</h1>
+    
+    <div class="debug-section">
+        <h3>Environment Check</h3>
+        <div id="environment-info"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>Add Test Contributions</h3>
+        <div id="contribution-info"></div>
+        <button onclick="addTestContributions()">Add Test User Contributions</button>
+        <button onclick="checkContributions()">Check Existing Contributions</button>
+    </div>
+
+    <script>
+        // Environment check
+        function checkEnvironment() {
+            const envDiv = document.getElementById('environment-info');
+            const isProduction = window.location.hostname !== 'localhost' && 
+                                window.location.hostname !== '127.0.0.1';
+            
+            envDiv.innerHTML = `
+                <div class="info">Hostname: ${window.location.hostname}</div>
+                <div class="info">URL: ${window.location.href}</div>
+                <div class="${isProduction ? 'success' : 'error'}">
+                    Environment: ${isProduction ? 'Production' : 'Development'}
+                </div>
+            `;
+        }
+        
+        // Add test contributions
+        async function addTestContributions() {
+            const contributionDiv = document.getElementById('contribution-info');
+            contributionDiv.innerHTML = '<div class="info">Adding test contributions...</div>';
+            
+            try {
+                // Try to access Firebase from the global scope or use a different approach
+                const firebase = window.firebase || await import('./src/firebase/index.js');
+                
+                const testContributions = [
+                    {
+                        id: 'test-contribution-1',
+                        name: 'Test User List 1',
+                        description: 'A test user-created phrase list',
+                        category: 'Custom',
+                        phrases: [
+                            'Test Phrase 1', 'Test Phrase 2', 'Test Phrase 3', 'Test Phrase 4', 'Test Phrase 5',
+                            'Test Phrase 6', 'Test Phrase 7', 'Test Phrase 8', 'Test Phrase 9', 'Test Phrase 10',
+                            'Test Phrase 11', 'Test Phrase 12', 'Test Phrase 13', 'Test Phrase 14', 'Test Phrase 15',
+                            'Test Phrase 16', 'Test Phrase 17', 'Test Phrase 18', 'Test Phrase 19', 'Test Phrase 20',
+                            'Test Phrase 21', 'Test Phrase 22', 'Test Phrase 23', 'Test Phrase 24'
+                        ],
+                        contributorName: 'Test User',
+                        contributorId: 'test-user-1',
+                        createdAt: new Date().toISOString(),
+                        status: 'approved',
+                        votes: 0,
+                        timesUsed: 0
+                    },
+                    {
+                        id: 'test-contribution-2',
+                        name: 'Another Test List',
+                        description: 'Another test user-created phrase list',
+                        category: 'Custom',
+                        phrases: [
+                            'Another Test 1', 'Another Test 2', 'Another Test 3', 'Another Test 4', 'Another Test 5',
+                            'Another Test 6', 'Another Test 7', 'Another Test 8', 'Another Test 9', 'Another Test 10',
+                            'Another Test 11', 'Another Test 12', 'Another Test 13', 'Another Test 14', 'Another Test 15',
+                            'Another Test 16', 'Another Test 17', 'Another Test 18', 'Another Test 19', 'Another Test 20',
+                            'Another Test 21', 'Another Test 22', 'Another Test 23', 'Another Test 24'
+                        ],
+                        contributorName: 'Test User 2',
+                        contributorId: 'test-user-2',
+                        createdAt: new Date().toISOString(),
+                        status: 'approved',
+                        votes: 0,
+                        timesUsed: 0
+                    }
+                ];
+                
+                let addedCount = 0;
+                for (const contribution of testContributions) {
+                    try {
+                        await firebase.addDoc(firebase.collection(firebase.db, 'userContributions'), contribution);
+                        addedCount++;
+                        console.log('✅ Added test contribution:', contribution.name);
+                    } catch (error) {
+                        console.error('❌ Error adding contribution:', contribution.name, error);
+                    }
+                }
+                
+                contributionDiv.innerHTML = `
+                    <div class="success">Successfully added ${addedCount}/${testContributions.length} test contributions!</div>
+                    <div class="info">Check the main app now to see if they appear.</div>
+                `;
+                
+            } catch (error) {
+                contributionDiv.innerHTML = `<div class="error">Error adding contributions: ${error.message}</div>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        // Check existing contributions
+        async function checkContributions() {
+            const contributionDiv = document.getElementById('contribution-info');
+            contributionDiv.innerHTML = '<div class="info">Checking existing contributions...</div>';
+            
+            try {
+                const firebase = await import('./src/firebase/index.js');
+                const contributions = await firebase.getDocs(firebase.collection(firebase.db, 'userContributions'));
+                
+                contributionDiv.innerHTML = `
+                    <div class="info">Found ${contributions.size} user contributions in Firebase</div>
+                    <div class="info">Contributions:</div>
+                    <pre>${contributions.docs.map(doc => JSON.stringify(doc.data(), null, 2)).join('\n\n')}</pre>
+                `;
+                
+            } catch (error) {
+                contributionDiv.innerHTML = `<div class="error">Error checking contributions: ${error.message}</div>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        // Initialize
+        checkEnvironment();
+    </script>
+</body>
+</html>

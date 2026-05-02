@@ -1,0 +1,137 @@
+.leaderboard {
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboard h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.leaderboard-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  font-weight: 500;
+  color: #666;
+}
+
+.control-group select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.control-group select:focus {
+  outline: none;
+  border-color: #0084ff;
+}
+
+.leaderboard-table {
+  overflow-x: auto;
+}
+
+.leaderboard table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.leaderboard th,
+.leaderboard td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.leaderboard th {
+  font-weight: 600;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+.leaderboard tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.rank-1 {
+  background-color: rgba(255, 215, 0, 0.1);
+}
+
+.rank-2 {
+  background-color: rgba(192, 192, 192, 0.1);
+}
+
+.rank-3 {
+  background-color: rgba(205, 127, 50, 0.1);
+}
+
+.rank-1 td:first-child {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.rank-2 td:first-child {
+  color: #c0c0c0;
+  font-weight: bold;
+}
+
+.rank-3 td:first-child {
+  color: #cd7f32;
+  font-weight: bold;
+}
+
+.error-message {
+  color: #dc3545;
+  padding: 1rem;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .leaderboard {
+    padding: 1rem;
+  }
+
+  .leaderboard-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .control-group {
+    width: 100%;
+  }
+
+  .control-group select {
+    flex-grow: 1;
+  }
+
+  .leaderboard th,
+  .leaderboard td {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+} 

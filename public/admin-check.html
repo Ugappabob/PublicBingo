@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Status Check</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script>
+        // Your Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjdOb1AigaigKwxfx7Ijxd9lax_X8lOcA",
+            authDomain: "publicbingo.firebaseapp.com",
+            projectId: "publicbingo",
+            storageBucket: "publicbingo.firebasestorage.app",
+            messagingSenderId: "1832642672",
+            appId: "1:1832642672:web:fd61b3dd61e4b2dcd5ecb5",
+            measurementId: "G-2375FY1MZ6",
+            databaseURL: "https://publicbingo-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        function checkAdminStatus() {
+            const user = firebase.auth().currentUser;
+            if (user) {
+                user.getIdTokenResult()
+                    .then((idTokenResult) => {
+                        console.log('Token claims:', idTokenResult.claims);
+                        document.getElementById('status').textContent = 
+                            `Admin status: ${idTokenResult.claims.admin ? 'Yes' : 'No'}`;
+                    })
+                    .catch((error) => {
+                        console.error('Error getting token:', error);
+                        document.getElementById('status').textContent = 
+                            'Error checking admin status';
+                    });
+            } else {
+                document.getElementById('status').textContent = 
+                    'Not signed in';
+            }
+        }
+
+        // Check status when page loads
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                checkAdminStatus();
+            } else {
+                document.getElementById('status').textContent = 
+                    'Not signed in';
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Admin Status Check</h1>
+    <div id="status">Checking...</div>
+    <button onclick="checkAdminStatus()">Check Again</button>
+</body>
+</html> 

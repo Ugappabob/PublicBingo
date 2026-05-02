@@ -1,0 +1,287 @@
+export interface PhraseList {
+  id: string;
+  name: string;
+  description: string;
+  phrases: string[];
+  category: string;
+  icon: string;
+}
+
+export const defaultPhraseLists: PhraseList[] = [
+  {
+    id: 'pop-music-tropes',
+    name: 'Pop Music Tropes',
+    description: 'Common themes and patterns found in popular music',
+    category: 'Entertainment',
+    icon: '🎵',
+    phrases: [
+      'The Big Chorus Drop',
+      'The "Oh-oh-oh" Chant',
+      'The Breakup Anthem',
+      'The Party Song',
+      'The "You Don\'t Know Me" Song',
+      'The Forbidden Love',
+      'The "One Night Stand" Track',
+      'The Self-Empowerment Ballad',
+      'The "Carpe Diem" Theme',
+      'The Bad Boy/Girl Attraction',
+      'The Seasonal Banger',
+      'The Small Town Escape Song',
+      'The Love Triangle',
+      'The Unreachable Crush',
+      'The Metaphor for Love',
+      'The "We\'re Different but Meant to Be" Song',
+      'The Apology Track',
+      'The Sexually Suggestive Dance Metaphor',
+      'The "Worldwide Connection" Song',
+      'The Money & Fame Fantasy',
+      'The Post-Breakup Glow-Up',
+      'The Nostalgia Jam',
+      'The "We Made It" Song',
+      'The Hidden Sadness in a Dance Track'
+    ]
+  },
+  {
+    id: 'grocery-store',
+    name: 'Grocery Store',
+    description: 'Common items you might find on a shopping list',
+    category: 'Daily Life',
+    icon: '🛒',
+    phrases: [
+      'Apples',
+      'Bananas',
+      'Oranges',
+      'Grapes',
+      'Lettuce',
+      'Tomatoes',
+      'Carrots',
+      'Potatoes',
+      'Onions',
+      'Garlic',
+      'Chicken breasts',
+      'Ground beef',
+      'Salmon fillet',
+      'Milk',
+      'Eggs',
+      'Butter',
+      'Bread (loaf)',
+      'Rice',
+      'Pasta',
+      'Cereal',
+      'Canned beans',
+      'Peanut butter',
+      'Cheese (block or shredded)',
+      'Yogurt'
+    ]
+  },
+  {
+    id: 'office-life',
+    name: 'Office Life',
+    description: 'Common experiences and situations in the workplace',
+    category: 'Work',
+    icon: '💼',
+    phrases: [
+      'Monday Morning Blues',
+      'Coffee Break',
+      'Meeting That Could Have Been an Email',
+      'Reply All Disaster',
+      'Printer Not Working',
+      'IT Support Call',
+      'Deadline Pressure',
+      'Office Gossip',
+      'Microwave Fish for Lunch',
+      'Parking Spot Drama',
+      'Elevator Small Talk',
+      'Bathroom Line',
+      'Office Birthday Cake',
+      'Work From Home Day',
+      'Zoom Meeting Technical Difficulties',
+      'Email Chain That Never Ends',
+      'Office Supplies Hoarder',
+      'Loud Typing',
+      'Desk Decorations',
+      'Water Cooler Conversations',
+      'Performance Review',
+      'Office Romance',
+      'Boss Walking By',
+      'End of Day Rush'
+    ]
+  },
+  {
+    id: 'holiday-traditions',
+    name: 'Holiday Traditions',
+    description: 'Common holiday activities and traditions',
+    category: 'Holidays',
+    icon: '🎄',
+    phrases: [
+      'Decorating the Tree',
+      'Hanging Stockings',
+      'Baking Cookies',
+      'Wrapping Presents',
+      'Holiday Music',
+      'Family Photos',
+      'Holiday Cards',
+      'Gingerbread House',
+      'Mistletoe Kiss',
+      'Holiday Lights',
+      'Hot Chocolate',
+      'Snow Angels',
+      'Holiday Movies',
+      'Gift Exchange',
+      'Holiday Dinner',
+      'New Year\'s Resolution',
+      'Fireworks',
+      'Countdown to Midnight',
+      'Holiday Sweaters',
+      'Candy Canes',
+      'Holiday Parades',
+      'Ice Skating',
+      'Holiday Markets',
+      'Watching the Ball Drop'
+    ]
+  },
+  {
+    id: 'social-media',
+    name: 'Social Media Life',
+    description: 'Common social media experiences and trends',
+    category: 'Technology',
+    icon: '📱',
+    phrases: [
+      'Instagram Story',
+      'TikTok Dance',
+      'Twitter Drama',
+      'Facebook Memory',
+      'LinkedIn Post',
+      'Snapchat Streak',
+      'Viral Video',
+      'Hashtag Trend',
+      'Influencer Post',
+      'Selfie Session',
+      'Food Photo',
+      'Pet Content',
+      'Throwback Thursday',
+      'Motivational Monday',
+      'Transformation Tuesday',
+      'Wellness Wednesday',
+      'Flashback Friday',
+      'Self-Care Sunday',
+      'Live Stream',
+      'Story Highlights',
+      'DM Sliding',
+      'Comment Section',
+      'Share Button',
+      'Like Button'
+    ]
+  },
+  {
+    id: 'sports-fan',
+    name: 'Sports Fan',
+    description: 'Common experiences for sports enthusiasts',
+    category: 'Sports',
+    icon: '⚽',
+    phrases: [
+      'Game Day',
+      'Tailgate Party',
+      'Team Jersey',
+      'Stadium Food',
+      'Referee Call',
+      'Overtime',
+      'Championship Game',
+      'Rivalry Match',
+      'Playoff Season',
+      'Fantasy League',
+      'Sports Bar',
+      'Team Chant',
+      'Victory Dance',
+      'Defeat Celebration',
+      'Player Trade',
+      'Draft Pick',
+      'Season Tickets',
+      'Team Colors',
+      'Mascot',
+      'Half-time Show',
+      'Sports Commentary',
+      'Highlight Reel',
+      'Championship Ring',
+      'Hall of Fame'
+    ]
+  },
+  {
+    id: 'college-life',
+    name: 'College Life',
+    description: 'Common experiences and situations in college',
+    category: 'Education',
+    icon: '🎓',
+    phrases: [
+      'All-Nighter',
+      'Coffee Addiction',
+      'Textbook Costs',
+      'Dorm Life',
+      'Cafeteria Food',
+      'Study Group',
+      'Final Exams',
+      'Spring Break',
+      'Greek Life',
+      'Campus Events',
+      'Student Loans',
+      'Part-Time Job',
+      'Roommate Drama',
+      'Laundry Day',
+      'Midterm Stress',
+      'Office Hours',
+      'Research Paper',
+      'Group Project',
+      'Campus Tour',
+      'Student ID',
+      'Parking Pass',
+      'Library Hours',
+      'Graduation Ceremony',
+      'Alumni Network'
+    ]
+  },
+  {
+    id: 'pet-owner',
+    name: 'Pet Owner',
+    description: 'Common experiences of pet ownership',
+    category: 'Lifestyle',
+    icon: '🐕',
+    phrases: [
+      'Morning Walk',
+      'Vet Appointment',
+      'Pet Food Shopping',
+      'Grooming Session',
+      'Play Time',
+      'Training Session',
+      'Pet Photos',
+      'Pet Birthday',
+      'Adoption Day',
+      'Pet Insurance',
+      'Dog Park Visit',
+      'Cat Nap',
+      'Pet Toys',
+      'Pet Bed',
+      'Pet Treats',
+      'Pet Vaccination',
+      'Pet Grooming',
+      'Pet Training',
+      'Pet Socialization',
+      'Pet Exercise',
+      'Pet Health Check',
+      'Pet Emergency',
+      'Pet Boarding',
+      'Pet Sitting'
+    ]
+  }
+];
+
+export const getPhraseListById = (id: string): PhraseList | undefined => {
+  return defaultPhraseLists.find(list => list.id === id);
+};
+
+export const getAllPhraseLists = (): PhraseList[] => {
+  return defaultPhraseLists;
+};
+
+export const getPhraseListsByCategory = (category: string): PhraseList[] => {
+  return defaultPhraseLists.filter(list => list.category === category);
+};

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Test - User Contributions</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .result { margin: 10px 0; padding: 10px; background: #f5f5f5; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Direct Test - User Contributions</h1>
+    
+    <button onclick="addTestData()">Add Test User Contributions</button>
+    <button onclick="checkData()">Check localStorage</button>
+    <button onclick="goToApp()">Go to Main App</button>
+    
+    <div id="result" class="result"></div>
+
+    <script>
+        function addTestData() {
+            const testData = [
+                {
+                    id: 'test-user-1',
+                    name: 'Test User List 1',
+                    description: 'A test user-created phrase list',
+                    category: 'Custom',
+                    phrases: [
+                        'Test Phrase 1', 'Test Phrase 2', 'Test Phrase 3', 'Test Phrase 4', 'Test Phrase 5',
+                        'Test Phrase 6', 'Test Phrase 7', 'Test Phrase 8', 'Test Phrase 9', 'Test Phrase 10',
+                        'Test Phrase 11', 'Test Phrase 12', 'Test Phrase 13', 'Test Phrase 14', 'Test Phrase 15',
+                        'Test Phrase 16', 'Test Phrase 17', 'Test Phrase 18', 'Test Phrase 19', 'Test Phrase 20',
+                        'Test Phrase 21', 'Test Phrase 22', 'Test Phrase 23', 'Test Phrase 24'
+                    ],
+                    contributorName: 'Test User',
+                    contributorId: 'test-user-1',
+                    createdAt: new Date().toISOString(),
+                    status: 'approved',
+                    votes: 0,
+                    timesUsed: 0
+                },
+                {
+                    id: 'test-user-2',
+                    name: 'Another Test List',
+                    description: 'Another test user-created phrase list',
+                    category: 'Custom',
+                    phrases: [
+                        'Another Test 1', 'Another Test 2', 'Another Test 3', 'Another Test 4', 'Another Test 5',
+                        'Another Test 6', 'Another Test 7', 'Another Test 8', 'Another Test 9', 'Another Test 10',
+                        'Another Test 11', 'Another Test 12', 'Another Test 13', 'Another Test 14', 'Another Test 15',
+                        'Another Test 16', 'Another Test 17', 'Another Test 18', 'Another Test 19', 'Another Test 20',
+                        'Another Test 21', 'Another Test 22', 'Another Test 23', 'Another Test 24'
+                    ],
+                    contributorName: 'Test User 2',
+                    contributorId: 'test-user-2',
+                    createdAt: new Date().toISOString(),
+                    status: 'approved',
+                    votes: 0,
+                    timesUsed: 0
+                }
+            ];
+            
+            localStorage.setItem('userContributions', JSON.stringify(testData));
+            document.getElementById('result').innerHTML = '<p style="color: green;">✅ Added 2 test user contributions to localStorage!</p>';
+        }
+        
+        function checkData() {
+            const data = localStorage.getItem('userContributions');
+            if (data) {
+                const parsed = JSON.parse(data);
+                document.getElementById('result').innerHTML = `
+                    <p style="color: blue;">📊 Found ${parsed.length} contributions in localStorage:</p>
+                    <ul>
+                        ${parsed.map(item => `<li><strong>${item.name}</strong> - ${item.description}</li>`).join('')}
+                    </ul>
+                `;
+            } else {
+                document.getElementById('result').innerHTML = '<p style="color: red;">❌ No contributions found in localStorage</p>';
+            }
+        }
+        
+        function goToApp() {
+            window.open('/create', '_blank');
+        }
+    </script>
+</body>
+</html>
