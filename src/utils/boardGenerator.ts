@@ -32,8 +32,9 @@ export const generateBoard = (phrases: string[]): BingoCell[] => {
       phrase = 'Free';
       console.log('Setting center cell (index 12) to "Free"');
     } else {
-      // Use the next phrase from our shuffled list
-      phrase = shuffledPhrases[phraseIndex] || `Phrase ${phraseIndex + 1}`;
+      // Use the next phrase from our shuffled list; empty if we ran out
+      phrase =
+        phraseIndex < shuffledPhrases.length ? shuffledPhrases[phraseIndex] : '';
       phraseIndex++;
     }
     

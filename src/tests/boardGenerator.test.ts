@@ -17,10 +17,11 @@ describe('Board Generator', () => {
     expect(board).toHaveLength(25);
     expect(isValidBingoBoard(board)).toBe(true);
     
-    // Check that all cells have the required properties
+    // Check that all cells have the required properties (center is pre-marked)
     board.forEach((cell, index) => {
       expect(cell.phrase).toBeDefined();
-      expect(cell.marked).toBe(false);
+      const isCenter = index === 12;
+      expect(cell.marked).toBe(isCenter);
       expect(cell.position).toBeDefined();
       expect(cell.position?.row).toBe(Math.floor(index / 5));
       expect(cell.position?.col).toBe(index % 5);
@@ -71,9 +72,19 @@ describe('Board Generator', () => {
     // Check that the board has the correct structure
     expect(board).toHaveLength(25);
     
-    // Check that cells beyond the available phrases have empty strings
-    for (let i = 10; i < 25; i++) {
-      expect(board[i].phrase).toBe('');
+    // Non-center cells after phrases are exhausted should be empty; center stays Free
+    for (let i = 0; i < 25; i++) {
+      if (i === 12) {
+        expect(board[i].phrase).toBe('Free');
+      } else {
+        expect(board[i].phrase).not.toBe('Free');
+      }
     }
+    const nonCenter = board.filter((_, i) => i !== 12);
+    const fromList = nonCenter.filter(c =>
+      insufficientPhrases.includes(c.phrase)
+    );
+    expect(fromList.length).toBeLessThanOrEqual(10);
+    expect(nonCenter.every(c => c.phrase === '' || insufficientPhrases.includes(c.phrase))).toBe(true);
   });
 }); 
