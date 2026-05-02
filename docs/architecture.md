@@ -269,25 +269,25 @@ The project uses environment-specific configuration files:
 
 2. **Production Environment (.env.production)**
    ```
-   # Firebase Web Configuration
-   REACT_APP_FIREBASE_API_KEY=AIzaSyDjdOb1AigaigKwxfx7Ijxd9lax_X8lOcA
-   REACT_APP_FIREBASE_AUTH_DOMAIN=publicbingo.firebaseapp.com
-   REACT_APP_FIREBASE_PROJECT_ID=publicbingo
-   REACT_APP_FIREBASE_STORAGE_BUCKET=publicbingo.firebasestorage.app
-   REACT_APP_FIREBASE_MESSAGING_SENDER_ID=1832642672
-   REACT_APP_FIREBASE_APP_ID=1:1832642672:web:fd61b3dd61e4b2dcd5ecb5
-   REACT_APP_FIREBASE_MEASUREMENT_ID=G-2375FY1MZ6
-   REACT_APP_FIREBASE_DATABASE_URL=https://publicbingo-default-rtdb.firebaseio.com
-   
+   # Firebase Web Configuration (values from Firebase Console → Project settings)
+   REACT_APP_FIREBASE_API_KEY=your_api_key_here
+   REACT_APP_FIREBASE_AUTH_DOMAIN=your_project_id.firebaseapp.com
+   REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+   REACT_APP_FIREBASE_STORAGE_BUCKET=your_project_id.appspot.com
+   REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+   REACT_APP_FIREBASE_APP_ID=your_app_id
+   REACT_APP_FIREBASE_MEASUREMENT_ID=your_measurement_id
+   REACT_APP_FIREBASE_DATABASE_URL=https://your_project_id-default-rtdb.firebaseio.com
+
    # WebSocket Configuration
-   REACT_APP_WEBSOCKET_URL=wss://publicbingo-websocket.onrender.com
-   REACT_APP_WS_HOST=publicbingo-websocket.onrender.com
+   REACT_APP_WEBSOCKET_URL=wss://your-websocket-host.example.com
+   REACT_APP_WS_HOST=your-websocket-host.example.com
    REACT_APP_WS_PATH=/ws
    REACT_APP_WS_PORT=443
-   
-   # Admin User Configuration
-   REACT_APP_ADMIN_EMAIL=admin.publicbingo@gmail.com
-   REACT_APP_ADMIN_NAME=Admin 
+
+   # Admin User Configuration (optional scripts only — never commit real passwords)
+   REACT_APP_ADMIN_EMAIL=your-admin@example.com
+   REACT_APP_ADMIN_NAME=Admin
    ```
 
 3. **Environment Template (.env.example)**

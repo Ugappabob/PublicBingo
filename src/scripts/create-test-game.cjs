@@ -1,17 +1,25 @@
+require('dotenv').config();
 const { initializeApp } = require('firebase/app');
 const { getFirestore, collection, doc, setDoc, Timestamp } = require('firebase/firestore');
 
 console.log('Starting test game creation script...');
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDjdOb1AigaigKwxfx7Ijxd9lax_X8lOcA",
-  authDomain: "publicbingo.firebaseapp.com",
-  projectId: "publicbingo",
-  storageBucket: "publicbingo.firebasestorage.app",
-  messagingSenderId: "1832642672",
-  appId: "1:1832642672:web:fd61b3dd61e4b2dcd5ecb5",
-  measurementId: "G-2375FY1MZ6"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
+
+if (!firebaseConfig.apiKey || !firebaseConfig.projectId) {
+  console.error(
+    'Missing Firebase env vars. Create a .env file (see .env.example) with REACT_APP_FIREBASE_* set before running this script.'
+  );
+  process.exit(1);
+}
 
 console.log('Initializing Firebase...');
 const app = initializeApp(firebaseConfig);
