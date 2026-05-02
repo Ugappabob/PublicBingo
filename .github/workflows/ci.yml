@@ -5,17 +5,39 @@ on:
     branches: [master, main]
   pull_request:
     branches: [master, main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
+    name: Install, typecheck, lint, build, test
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Placeholders for webpack DefinePlugin / Firebase config (override via repo secrets if tests need real values).
+      REACT_APP_FIREBASE_API_KEY: ci-placeholder
+      REACT_APP_FIREBASE_AUTH_DOMAIN: ci.firebaseapp.com
+      REACT_APP_FIREBASE_PROJECT_ID: ci-placeholder
+      REACT_APP_FIREBASE_STORAGE_BUCKET: ci-placeholder.appspot.com
+      REACT_APP_FIREBASE_MESSAGING_SENDER_ID: '000000000000'
+      REACT_APP_FIREBASE_APP_ID: 1:000000000000:web:0000000000000000000000
+      REACT_APP_FIREBASE_MEASUREMENT_ID: G-XXXXXXXXXX
+      REACT_APP_FIREBASE_DATABASE_URL: https://ci-placeholder.firebaseio.com
+      REACT_APP_WEBSOCKET_URL: http://localhost:3001
+
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+          cache: npm
 
       - name: Install
         run: npm ci
@@ -28,17 +50,8 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
-          # Non-secret placeholders so webpack DefinePlugin has values; override via repo Environment if needed.
-          REACT_APP_FIREBASE_API_KEY: ci-placeholder
-          REACT_APP_FIREBASE_AUTH_DOMAIN: ci.firebaseapp.com
-          REACT_APP_FIREBASE_PROJECT_ID: ci-placeholder
-          REACT_APP_FIREBASE_STORAGE_BUCKET: ci-placeholder.appspot.com
-          REACT_APP_FIREBASE_MESSAGING_SENDER_ID: '000000000000'
-          REACT_APP_FIREBASE_APP_ID: 1:000000000000:web:0000000000000000000000
-          REACT_APP_FIREBASE_MEASUREMENT_ID: G-XXXXXXXXXX
-          REACT_APP_FIREBASE_DATABASE_URL: https://ci-placeholder.firebaseio.com
 
+      # Jest suite is not fully green yet; keep signal without failing the workflow.
       - name: Test
-        run: npm test -- --passWithNoTests
+        run: npm test -- --ci --watchAll=false --passWithNoTests
         continue-on-error: true
