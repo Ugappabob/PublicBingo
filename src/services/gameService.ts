@@ -1,18 +1,13 @@
-// Firebase imports - will be available in production
-let doc: any, setDoc: any, getDoc: any, updateDoc: any, onSnapshot: any, db: any;
-
-try {
-  const firebase = require('../firebase/index');
-  doc = firebase.doc;
-  setDoc = firebase.setDoc;
-  getDoc = firebase.getDoc;
-  updateDoc = firebase.updateDoc;
-  onSnapshot = firebase.onSnapshot;
-  db = firebase.db;
-} catch (error) {
-  // Firebase not available in development
-  console.log('Firebase not available, using localStorage fallback');
-}
+import type { DocumentData } from 'firebase/firestore';
+import {
+  db,
+  doc,
+  getDoc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+  usingMockFirebase,
+} from '../firebase/index';
 
 export interface GameSession {
   id: string;
@@ -102,7 +97,8 @@ class GameService {
         console.log(`About to save game session with ${gameSession.phrases.length} phrases`);
 
                 // Check if we have a real Firebase instance (not a mock)
-                const isRealFirebase = this.isProduction && setDoc && doc && db && db.app && db.app.name !== 'mock-app';
+                const isRealFirebase =
+                  this.isProduction && !usingMockFirebase && db?.app?.name !== 'mock-app';
                 
                 // Debug logging removed for production
                 
@@ -144,7 +140,8 @@ class GameService {
     console.log(`Loading game session: ${gameId}`);
     
         // Check if we have a real Firebase instance (not a mock)
-        const isRealFirebase = this.isProduction && getDoc && doc && db && db.app && db.app.name !== 'mock-app';
+        const isRealFirebase =
+          this.isProduction && !usingMockFirebase && db?.app?.name !== 'mock-app';
         
         if (isRealFirebase) {
           // Use Firebase in production
@@ -202,7 +199,8 @@ class GameService {
     console.log('🔥 Firebase app name:', db?.app?.name || 'no app');
     
     // Check if we have a real Firebase instance (not a mock)
-            const isRealFirebase = this.isProduction && updateDoc && doc && db && db.app && db.app.name !== 'mock-app';
+            const isRealFirebase =
+              this.isProduction && !usingMockFirebase && db?.app?.name !== 'mock-app';
     
     console.log('🔍 Firebase decision logic:');
     console.log('🏭 this.isProduction:', this.isProduction);
@@ -223,7 +221,7 @@ class GameService {
         console.log('📝 Update data type:', typeof updates);
         console.log('📝 Update data stringified:', JSON.stringify(updates, null, 2));
         console.log('📝 About to call updateDoc with:', { docRef, updates });
-        await updateDoc(docRef, updates);
+        await updateDoc(docRef, updates as DocumentData);
         console.log('✅ Game session updated in Firebase:', gameId);
         console.log('✅ Firebase update completed successfully');
         console.log('✅ Firebase updateDoc call completed without error');
@@ -293,7 +291,8 @@ class GameService {
     console.log('🔥 Firebase app name:', db?.app?.name || 'no app');
     
     // Check if we have a real Firebase instance (not a mock)
-            const isRealFirebase = this.isProduction && onSnapshot && doc && db && db.app && db.app.name !== 'mock-app';
+            const isRealFirebase =
+              this.isProduction && !usingMockFirebase && db?.app?.name !== 'mock-app';
     
     console.log('🔍 Firebase decision logic:');
     console.log('🏭 this.isProduction:', this.isProduction);

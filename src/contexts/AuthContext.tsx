@@ -45,7 +45,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     console.log('AuthContext v2.0: Initializing authentication...');
     
     // Create a default user immediately to prevent hanging
-    const createDefaultUser = (displayName: string = 'Anonymous User', providerId: string = 'anonymous') => {
+    const createDefaultUser = (displayName = 'Anonymous User', providerId = 'anonymous') => {
       // Generate a persistent ID for the guest user
       let persistentId = localStorage.getItem('guestUserId');
       if (!persistentId) {

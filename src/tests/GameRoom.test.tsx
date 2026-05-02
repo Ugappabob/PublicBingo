@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import { GameRoomComponent } from '../components/game/GameRoom';
+import { gameService } from '../services/game';
 import type { BingoCell, GameRoom, Player } from '../types/types';
 
 // Mock the AuthContext
@@ -119,7 +120,6 @@ describe('GameRoom Component', () => {
     jest.clearAllMocks();
     
     // Set up default successful mock implementations
-    const { gameService } = require('../services/game');
     gameService.getGameState.mockResolvedValue(mockGame);
     gameService.updateGameState.mockResolvedValue(undefined);
     gameService.joinGame.mockResolvedValue(undefined);
@@ -151,7 +151,6 @@ describe('GameRoom Component', () => {
 
     test('should render error state when game loading fails', async () => {
       // Mock the game service to throw an error
-      const { gameService } = require('../services/game');
       gameService.getGameState.mockRejectedValue(new Error('Game not found'));
 
       renderGameRoom();
@@ -220,8 +219,6 @@ describe('GameRoom Component', () => {
     });
 
     test('should update game state when cell is clicked', async () => {
-      const { gameService } = require('../services/game');
-      
       renderGameRoom();
 
       await waitFor(() => {
@@ -328,7 +325,6 @@ describe('GameRoom Component', () => {
 
   describe('Game State Management', () => {
     test('should handle game status changes', async () => {
-      const { gameService } = require('../services/game');
       gameService.getGameState.mockResolvedValue({
         ...mockGame,
         status: 'playing'
@@ -345,7 +341,6 @@ describe('GameRoom Component', () => {
     });
 
     test('should handle player joining', async () => {
-      const { gameService } = require('../services/game');
       gameService.getGameState.mockResolvedValue(mockGame);
 
       renderGameRoom();
@@ -359,7 +354,6 @@ describe('GameRoom Component', () => {
     });
 
     test('should handle player leaving', async () => {
-      const { gameService } = require('../services/game');
       gameService.getGameState.mockResolvedValue(mockGame);
 
       renderGameRoom();
@@ -389,7 +383,6 @@ describe('GameRoom Component', () => {
 
   describe('Error Handling', () => {
     test('should handle network errors gracefully', async () => {
-      const { gameService } = require('../services/game');
       gameService.getGameState.mockRejectedValue(new Error('Network error'));
 
       renderGameRoom();
@@ -404,7 +397,6 @@ describe('GameRoom Component', () => {
     });
 
     test('should handle invalid game ID', async () => {
-      const { gameService } = require('../services/game');
       gameService.getGameState.mockRejectedValue(new Error('Game not found'));
 
       renderGameRoom('invalid-game-id');
@@ -418,7 +410,6 @@ describe('GameRoom Component', () => {
     });
 
     test('should handle unauthorized access', async () => {
-      const { gameService } = require('../services/game');
       gameService.getGameState.mockRejectedValue(new Error('Unauthorized'));
 
       renderGameRoom();
@@ -434,7 +425,6 @@ describe('GameRoom Component', () => {
 
   describe('Performance and Optimization', () => {
     test('should not re-render unnecessarily', async () => {
-      const { gameService } = require('../services/game');
       gameService.getGameState.mockResolvedValue(mockGame);
 
       const { rerender } = renderGameRoom();
@@ -458,8 +448,6 @@ describe('GameRoom Component', () => {
     });
 
     test('should handle large number of players efficiently', async () => {
-      const { gameService } = require('../services/game');
-      
       // Create a game with many players
       const manyPlayersGame = {
         ...mockGame,

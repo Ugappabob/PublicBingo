@@ -1,25 +1,7 @@
 import type { DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import { defaultPhraseLists, PhraseList } from '../data/defaultPhraseLists';
 
-// Firebase imports - will be available in production
-let db: any, collection: any, addDoc: any, getDocs: any, query: any, where: any, doc: any, getDoc: any, updateDoc: any, deleteDoc: any;
-
-try {
-  const firebase = require('../firebase/index');
-  db = firebase.db;
-  collection = firebase.collection;
-  addDoc = firebase.addDoc;
-  getDocs = firebase.getDocs;
-  query = firebase.query;
-  where = firebase.where;
-  doc = firebase.doc;
-  getDoc = firebase.getDoc;
-  updateDoc = firebase.updateDoc;
-  deleteDoc = firebase.deleteDoc;
-} catch (error) {
-  // Firebase not available in development
-  console.log('Firebase not available, using localStorage fallback');
-}
+import { addDoc, collection, db, deleteDoc, doc, getDocs, updateDoc, usingMockFirebase } from '../firebase/index';
 
 export interface UserContribution {
   id: string;
@@ -56,10 +38,11 @@ class PublicPhraseListServiceImpl implements PublicPhraseListService {
 
   constructor() {
     // Check if we're in production (Firebase available)
-    this.isProduction = typeof window !== 'undefined' && 
-      window.location.hostname !== 'localhost' && 
+    this.isProduction =
+      typeof window !== 'undefined' &&
+      window.location.hostname !== 'localhost' &&
       window.location.hostname !== '127.0.0.1' &&
-      db && collection;
+      !usingMockFirebase;
   }
 
   async getAllPublicLists(): Promise<PhraseList[]> {
@@ -70,7 +53,7 @@ class PublicPhraseListServiceImpl implements PublicPhraseListService {
     console.log('🔄 publicPhraseListService: Built-in list names =', this.publicLists.map(list => list.name));
     
     // Re-enable Firebase now that we have proper configuration
-    if (this.isProduction && db && collection) {
+    if (this.isProduction && !usingMockFirebase) {
       try {
         console.log('🔄 publicPhraseListService: Attempting Firebase fetch...');
         console.log('🔄 publicPhraseListService: db instance:', db);
@@ -84,8 +67,8 @@ class PublicPhraseListServiceImpl implements PublicPhraseListService {
         
         if (!firebaseLists.empty) {
           const lists: PhraseList[] = [];
-          firebaseLists.forEach((d: QueryDocumentSnapshot<DocumentData>) => {
-            const data = d.data();
+          firebaseLists.forEach((d: unknown) => {
+            const data = (d as QueryDocumentSnapshot<DocumentData>).data();
             lists.push({
               id: data.id,
               name: data.name,
@@ -121,7 +104,7 @@ class PublicPhraseListServiceImpl implements PublicPhraseListService {
   }
 
   private async seedDefaultLists(): Promise<void> {
-    if (!this.isProduction || !db || !collection || !addDoc) {
+    if (!this.isProduction || usingMockFirebase) {
       return;
     }
 
@@ -173,15 +156,15 @@ class PublicPhraseListServiceImpl implements PublicPhraseListService {
       console.log('🔄 publicPhraseListService: Firebase available =', !!(db && collection));
       
       // Re-enable Firebase now that we have proper configuration
-      if (this.isProduction && db && collection) {
+      if (this.isProduction && !usingMockFirebase) {
         try {
           console.log('🔄 publicPhraseListService: Attempting to fetch user contributions from Firebase...');
           const contributions = await getDocs(collection(db, 'userContributions'));
           console.log('📊 publicPhraseListService: Firebase returned', contributions.size, 'user contributions');
           
           const userContributions: UserContribution[] = [];
-          contributions.forEach((d: QueryDocumentSnapshot<DocumentData>) => {
-            const data = d.data();
+          contributions.forEach((d: unknown) => {
+            const data = (d as QueryDocumentSnapshot<DocumentData>).data();
             console.log('📋 publicPhraseListService: Processing contribution:', data.name);
             userContributions.push({
               id: data.id,
@@ -265,7 +248,7 @@ class PublicPhraseListServiceImpl implements PublicPhraseListService {
   }
 
   async approveContribution(contributionId: string): Promise<boolean> {
-    if (this.isProduction && db && collection) {
+    if (this.isProduction && !usingMockFirebase) {
       try {
         // Update in Firebase
         const contributionRef = doc(db, 'userContributions', contributionId);
@@ -294,7 +277,7 @@ class PublicPhraseListServiceImpl implements PublicPhraseListService {
   }
 
   async rejectContribution(contributionId: string): Promise<boolean> {
-    if (this.isProduction && db && collection) {
+    if (this.isProduction && !usingMockFirebase) {
       try {
         // Update in Firebase
         const contributionRef = doc(db, 'userContributions', contributionId);
@@ -323,7 +306,7 @@ class PublicPhraseListServiceImpl implements PublicPhraseListService {
   }
 
   async deleteUserContribution(contributionId: string): Promise<boolean> {
-    if (this.isProduction && db && collection) {
+    if (this.isProduction && !usingMockFirebase) {
       try {
         // Delete from Firebase
         const contributionRef = doc(db, 'userContributions', contributionId);

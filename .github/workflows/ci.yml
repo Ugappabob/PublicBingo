@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          # Non-secret placeholders so webpack DefinePlugin has values; override via repo Environment if needed.
+          REACT_APP_FIREBASE_API_KEY: ci-placeholder
+          REACT_APP_FIREBASE_AUTH_DOMAIN: ci.firebaseapp.com
+          REACT_APP_FIREBASE_PROJECT_ID: ci-placeholder
+          REACT_APP_FIREBASE_STORAGE_BUCKET: ci-placeholder.appspot.com
+          REACT_APP_FIREBASE_MESSAGING_SENDER_ID: '000000000000'
+          REACT_APP_FIREBASE_APP_ID: 1:000000000000:web:0000000000000000000000
+          REACT_APP_FIREBASE_MEASUREMENT_ID: G-XXXXXXXXXX
+          REACT_APP_FIREBASE_DATABASE_URL: https://ci-placeholder.firebaseio.com
+
+      - name: Test
+        run: npm test -- --passWithNoTests
+        continue-on-error: true

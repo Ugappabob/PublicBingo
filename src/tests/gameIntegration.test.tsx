@@ -2,9 +2,12 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
+import { onSnapshot } from 'firebase/firestore';
 import { GameRoomComponent } from '../components/game/GameRoom';
 import { GamePage } from '../components/game/GamePage';
-import { GameSetup } from '../components/game/GameSetup';
+import GameSetup from '../components/game/GameSetup';
+import { gameService } from '../services/game';
+import { templateService } from '../services/templateService';
 import type { BingoCell, GameRoom, Player, Template } from '../types/types';
 
 // Mock all dependencies
@@ -148,9 +151,6 @@ describe('Game Integration Tests', () => {
 
   describe('Complete Game Flow', () => {
     test('should handle complete game flow from setup to completion', async () => {
-      const { gameService } = require('../services/game');
-      const { templateService } = require('../services/templateService');
-
       // Mock template service
       templateService.getTemplate.mockResolvedValue(mockTemplate);
       
@@ -222,8 +222,6 @@ describe('Game Integration Tests', () => {
     });
 
     test('should handle multiplayer game flow', async () => {
-      const { gameService } = require('../services/game');
-      
       // Create a multiplayer game with multiple players
       const multiplayerGame = {
         ...mockGame,
@@ -293,8 +291,6 @@ describe('Game Integration Tests', () => {
     });
 
     test('should handle game with different win conditions', async () => {
-      const { gameService } = require('../services/game');
-      
       // Create game with "full board" win condition
       const fullBoardGame = {
         ...mockGame,
@@ -334,10 +330,7 @@ describe('Game Integration Tests', () => {
 
   describe('Real-time Updates', () => {
     test('should handle real-time player updates', async () => {
-      const { gameService } = require('../services/game');
-      
       // Mock onSnapshot to simulate real-time updates
-      const { onSnapshot } = require('firebase/firestore');
       const mockUnsubscribe = jest.fn();
       
       onSnapshot.mockImplementation((docRef, callback) => {
@@ -390,9 +383,6 @@ describe('Game Integration Tests', () => {
     });
 
     test('should handle real-time game state changes', async () => {
-      const { gameService } = require('../services/game');
-      const { onSnapshot } = require('firebase/firestore');
-      
       onSnapshot.mockImplementation((docRef, callback) => {
         // Initial state
         callback({
@@ -448,8 +438,6 @@ describe('Game Integration Tests', () => {
 
   describe('Error Scenarios', () => {
     test('should handle network disconnection during game', async () => {
-      const { gameService } = require('../services/game');
-      
       gameService.getGameState.mockResolvedValue(mockGame);
       gameService.updateGameState.mockRejectedValue(new Error('Network error'));
 
@@ -476,8 +464,6 @@ describe('Game Integration Tests', () => {
     });
 
     test('should handle concurrent player actions', async () => {
-      const { gameService } = require('../services/game');
-      
       gameService.getGame.mockResolvedValue(mockGame);
       gameService.updateGameState.mockImplementation(() => 
         new Promise(resolve => setTimeout(resolve, 100))
@@ -508,8 +494,6 @@ describe('Game Integration Tests', () => {
     });
 
     test('should handle game with invalid data', async () => {
-      const { gameService } = require('../services/game');
-      
       // Create game with invalid board data
       const invalidGame = {
         ...mockGame,
@@ -538,8 +522,6 @@ describe('Game Integration Tests', () => {
 
   describe('Performance and Scalability', () => {
     test('should handle large number of players efficiently', async () => {
-      const { gameService } = require('../services/game');
-      
       // Create game with 100 players
       const largeGame = {
         ...mockGame,
@@ -576,8 +558,6 @@ describe('Game Integration Tests', () => {
     });
 
     test('should handle rapid state updates efficiently', async () => {
-      const { gameService } = require('../services/game');
-      
       gameService.getGameState.mockResolvedValue(mockGame);
       gameService.updateGameState.mockResolvedValue(undefined);
 
